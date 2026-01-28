@@ -1,0 +1,35 @@
+# .github/workflows/keep-alive.yml
+name: 🫀 Keep Repository Active
+on:
+  # 每30天运行一次（确保60天内至少运行一次）
+  schedule:
+    - cron: '0 0 1,15 * *'  # 每月1号和15号运行
+  # 允许手动触发
+  workflow_dispatch:
+  # 当main分支有push时也运行
+  push:
+    branches: [ main, master ]
+  # 当有PR时也运行
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Update heartbeat file
+        run: |
+          echo "Last active: $(date)" > .github/heartbeat.txt
+          echo "Timestamp: $(date +%s)" >> .github/heartbeat.txt
+          
+      - name: Commit heartbeat update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/heartbeat.txt
+          git commit -m "🔁 chore: update heartbeat [skip ci]" || echo "No changes to commit"
+          git push || echo "Nothing to push"
