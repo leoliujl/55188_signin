@@ -19,7 +19,13 @@ def sign_in(cookie_str):
     })
     session.cookies.update(dict(i.strip().split("=", 1) for i in cookie_str.split(";") if "=" in i))
 
-    r1 = session.get("https://www.55188.com/plugin.php?id=sign")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Referer": "https://www.55188.com/"
+    }
+    r1 = session.get("https://www.55188.com/plugin.php?id=sign", headers=headers, timeout=10)
     r1.encoding = r1.apparent_encoding
     html = r1.text
     msg = ""    # 主状态
