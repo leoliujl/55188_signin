@@ -29,3 +29,8 @@ jobs:
           WX_CORPSECRET: ${{ secrets.WX_CORPSECRET }}
           WX_AGENTID: ${{ secrets.WX_AGENTID }}
         run: python 55188_signin.py  # 脚本名
+
+      - name: Test connectivity
+        run: |
+          curl -v https://www.55188.com/plugin.php?id=sign -H "User-Agent: Mozilla/5.0" --max-time 10 || echo "Failed"
+          nslookup www.55188.com
